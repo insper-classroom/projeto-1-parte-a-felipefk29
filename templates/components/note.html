@@ -1,15 +1,28 @@
 <div class="card">
   <div class="card-title">
     <span>{title}</span>
-    <form method="post" class="fav-form">
-      <input type="hidden" name="favorite_id" value="{id}" />
-      <button class="star {fav_class}" type="submit" title="Favoritar" aria-label="Favoritar">
-        <!-- inline SVG da estrela -->
-        <svg class="star-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-        </svg>
-      </button>
-    </form>
+    <div class="card-actions">
+      <!-- Favoritar -->
+      <form method="post" class="fav-form" title="Favoritar">
+        <input type="hidden" name="favorite_id" value="{id}" />
+        <button class="star {fav_class}" type="submit" aria-label="Favoritar">
+          <svg class="star-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+          </svg>
+        </button>
+      </form>
+
+      <!-- Deletar -->
+      <form method="post" class="delete-form" title="Excluir">
+        <input type="hidden" name="delete_id" value="{id}" />
+        <button class="trash" type="submit" aria-label="Excluir">
+          <svg class="trash-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M3 6h18v2H3V6zm2 3h14l-1.5 11.5a2 2 0 0 1-2 1.5H8.5a2 2 0 0 1-2-1.5L5 9zm5-5h4l1 2H9l1-2z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
   </div>
+
   <div class="card-content">{details}</div>
 </div>

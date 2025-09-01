@@ -54,6 +54,15 @@ class Database():
             (note_id,)
         )
         self.conn.commit()
+    def get_by_id(self, note_id):
+        cursor = self.conn.execute("SELECT id, title, content, favorite FROM note WHERE id = ?", 
+                                  (note_id))
+        row = cursor.fetchone() #Retira a primeira linha do resultado do SELECT armazenado na memória
+        if row:             
+            _id, titulo, conteudo, fav = row
+            return Note(id=_id, title=titulo, content=conteudo, favorite=fav) #Caso exista a linha, retorna o objeto Note
+        return None
+    
 
 class Note:
 

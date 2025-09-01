@@ -1,4 +1,4 @@
-from utils import load_data, load_template, adiciona, build_response, toggle_favorite
+from utils import load_data, load_template, adiciona, build_response, toggle_favorite, delete_note
 from urllib.parse import unquote_plus
 
 def index(request):
@@ -16,6 +16,11 @@ def index(request):
         # Ramo 1: toggle de favorito
         if 'favorite_id' in params and params['favorite_id'].isdigit():
             toggle_favorite(int(params['favorite_id']))
+            return build_response(code=303, reason='See Other', headers='Location: /')
+        
+        
+        if 'delete_id' in params and params['delete_id'].isdigit():
+            delete_note(int(params['delete_id']))
             return build_response(code=303, reason='See Other', headers='Location: /')
 
         # Ramo 2: criação de nota

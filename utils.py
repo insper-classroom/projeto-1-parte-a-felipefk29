@@ -80,5 +80,8 @@ def adiciona(note):
 def toggle_favorite(note_id: int):
     db = Database('notes')
     db.toggle_favorite(note_id)
-    
+
+def delete_note(note_id: int):
+    db = Database('notes')
+    db.delete(note_id)
 
