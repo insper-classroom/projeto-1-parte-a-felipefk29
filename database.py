@@ -19,24 +19,25 @@ class Database():
                      );
                      """)
         self.conn.commit()
+        cols = [row[1] for row in cursor.execute("PRAGMA table_info(note)")]
+        if 'favorite' not in cols:
+            cursor.execute("ALTER TABLE note ADD COLUMN favorite INTEGER NOT NULL DEFAULT 0;")
+            self.conn.commit()
 
     def add(self, note):
         cursor = self.conn.cursor()
         cursor.execute(
-            f"INSERT INTO note (title, content) VALUES ('{note.title}','{note.content}')"
-             )
+            "INSERT INTO note (title, content, favorite) VALUES (?, ?, ?)",
+            (note.title, note.content, getattr(note, 'favorite', 0))
+        )
         self.conn.commit()
     
     def get_all(self):
         notes = []
-        cursor = self.conn.execute("SELECT id, title, content FROM note")
-
+        cursor = self.conn.execute("SELECT id, title, content, favorite FROM note ORDER BY favorite DESC, id DESC")
         for linha in cursor:
-            _id = linha[0]
-            titulo = linha[1]
-            conteudo = linha[2]
-            notes.append(Note(id = _id, title = titulo, content = conteudo))
-
+            _id, titulo, conteudo, fav = linha
+            notes.append(Note(id=_id, title=titulo, content=conteudo, favorite=fav))
         return notes
     
     def update(self, entry):
@@ -46,12 +47,20 @@ class Database():
     def delete(self,note_id):
         cursor = self.conn.execute(f"DELETE FROM note WHERE id = '{note_id}'")
         self.conn.commit()
+    def toggle_favorite(self, note_id):
+        # inverte 0<->1 de forma segura
+        self.conn.execute(
+            "UPDATE note SET favorite = CASE favorite WHEN 1 THEN 0 ELSE 1 END WHERE id = ?",
+            (note_id,)
+        )
+        self.conn.commit()
 
 class Note:
 
-    def __init__(self, id=None, title=None, content=''):
+    def __init__(self, id=None, title=None, content='',favorite=0):
         self.id = id
         self.title = title
         self.content = content
+        self.favorite = favorite
 
 

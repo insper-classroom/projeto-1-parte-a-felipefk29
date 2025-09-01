@@ -1,6 +1,15 @@
 <div class="card">
-  <h3 class="card-title">{title}</h3>
-  <div class="card-content">
-    <p>{details}</p>
+  <div class="card-title">
+    <span>{title}</span>
+    <form method="post" class="fav-form">
+      <input type="hidden" name="favorite_id" value="{id}" />
+      <button class="star {fav_class}" type="submit" title="Favoritar" aria-label="Favoritar">
+        <!-- inline SVG da estrela -->
+        <svg class="star-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+        </svg>
+      </button>
+    </form>
   </div>
+  <div class="card-content">{details}</div>
 </div>

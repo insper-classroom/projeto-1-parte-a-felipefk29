@@ -1,16 +1,40 @@
 from pathlib import Path
 import json
-import html
+from database import Database, Note
 
-def extract_route(request):
-    lista_palavras = request.split()
-    relative_path = lista_palavras[1][1:]
-    return relative_path  
+def extract_route(request: str) -> str:
+    """
+    Extrai a rota do primeiro cabeçalho HTTP. Retorna string vazia se não conseguir.
+    """
+    if not request:
+        return ''
+    lines = request.splitlines()
+    if not lines:
+        return ''
+    first = lines[0].strip()
+    if not first:
+        return ''
+    parts = first.split()
+    if len(parts) < 2:
+        return ''
+    path = parts[1]
+    # remove slash inicial
+    if path.startswith('/'):
+        path = path[1:]
+    return path
 
 def read_file(path: Path):
     with open(path,'rb') as file:
         return file.read()
+    
 def load_data(filename):
+    if filename == 'notes.json':
+        # use 'notes' (Database adiciona .db internamente) — igual ao usado em adiciona()
+        db = Database('notes')
+        notes = db.get_all()
+        # retornar as chaves que a aplicação espera: 'id', 'title', 'content'
+        return [{'id': note.id, 'title': note.title, 'content': note.content, 'favorite': getattr(note,'favorite',0)} for note in notes]
+
     data_dir = Path(__file__).parent / "data"
     filepath = data_dir / filename
     if not filepath.exists():
@@ -38,14 +62,23 @@ def build_response(body='', code=200, reason='OK', headers=''):
     return response.encode()
 
 def adiciona(note):
-    data_dir = Path(__file__).parent / "data"
-    data_dir.mkdir(parents=True, exist_ok=True)
-    filepath = data_dir / "notes.json"
+    db = Database('notes')  # cria/abre notes.db
 
-    notas = load_data('notes.json')  # load_data já trata arquivo inexistente e JSON inválido
-    notas.append(note)
+    if isinstance(note, dict):
+        title = note.get('title')
+        content = note.get('content', '')
+        favorite = int(note.get('favorite', 0))        
+        note_obj = Note(title=title, content=content, favorite=favorite)
+    elif isinstance(note, Note):
+        note_obj = note
+    else:
+        # fallback: transforma em conteúdo de texto
+        note_obj = Note(title=None, content=str(note), favorite=0)
 
-    # grava usando Path
-    filepath.write_text(json.dumps(notas, ensure_ascii=False, indent=4), encoding="utf-8")
+    db.add(note_obj)
+
+def toggle_favorite(note_id: int):
+    db = Database('notes')
+    db.toggle_favorite(note_id)
     
 
