@@ -27,7 +27,7 @@
       <span class="subtitle">Como o Post-it, mas com outro verbo</span>
     </div>
 
-<form method="post" class="form-card">
+<form method="post" action="/" class="form-card">  <!-- forçar POST para a raiz, sem ?edit_id -->
   <input
     class="form-card-title"
     type="text"
@@ -42,10 +42,16 @@
     placeholder="Digite o conteúdo..."
   >{form_details_value}</textarea>
 
-  <!-- hidden só terá valor quando editando; vazio no modo criação -->
-  <input type="hidden" name="update_id" value="{form_update_id}" />
+  <!-- Tag (tema) -->
+  <input
+    class="form-card-tag"
+    type="text"
+    name="tag"
+    placeholder="Tag (tema, opcional)"
+    value="{form_tag_value}"
+  />
 
-  <!-- Botão como antes; o link "Cancelar" só é injetado em modo edição -->
+  <input type="hidden" name="update_id" value="{form_update_id}" />  <!-- nome fixo, value com o id -->
   <button class="btn" type="submit">{form_submit_label}</button>
   {cancel_link}
 </form>

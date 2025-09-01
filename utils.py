@@ -20,8 +20,7 @@ def extract_route(request: str) -> str:
     path = parts[1]
     if path.startswith('/'):
         path = path[1:]
-    # 🔧 remova a query da rota
-    if '?' in path:
+    if '?' in path:               # remove ?edit_id=...
         path = path.split('?', 1)[0]
     return path
 
@@ -31,20 +30,34 @@ def read_file(path: Path):
     
 def load_data(filename):
     if filename == 'notes.json':
-        # use 'notes' (Database adiciona .db internamente) — igual ao usado em adiciona()
         db = Database('notes')
         notes = db.get_all()
-        # retornar as chaves que a aplicação espera: 'id', 'title', 'content'
-        return [{'id': note.id, 'title': note.title, 'content': note.content, 'favorite': getattr(note,'favorite',0)} for note in notes]
+        return [
+            {
+                'id': n.id,
+                'title': n.title,
+                'content': n.content,
+                'favorite': getattr(n, 'favorite', 0),
+                'tag': getattr(n, 'tag', '') or ''
+            } for n in notes
+        ]
+    return []
+# def load_data(filename):
+#     if filename == 'notes.json':
+#         # use 'notes' (Database adiciona .db internamente) — igual ao usado em adiciona()
+#         db = Database('notes')
+#         notes = db.get_all()
+#         # retornar as chaves que a aplicação espera: 'id', 'title', 'content'
+#         return [{'id': note.id, 'title': note.title, 'content': note.content, 'favorite': getattr(note,'favorite',0)} for note in notes]
 
-    data_dir = Path(__file__).parent / "data"
-    filepath = data_dir / filename
-    if not filepath.exists():
-        return []
-    try:
-        return json.loads(filepath.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return []
+#     data_dir = Path(__file__).parent / "data"
+#     filepath = data_dir / filename
+#     if not filepath.exists():
+#         return []
+#     try:
+#         return json.loads(filepath.read_text(encoding="utf-8"))
+#     except json.JSONDecodeError:
+#         return []
 
 def load_template(filename):
     templates_dir = Path(__file__).parent / "templates"
@@ -64,20 +77,19 @@ def build_response(body='', code=200, reason='OK', headers=''):
     return response.encode()
 
 def adiciona(note):
-    db = Database('notes')  # cria/abre notes.db
-
+    db = Database('notes')
     if isinstance(note, dict):
         title = note.get('title')
         content = note.get('content', '')
-        favorite = int(note.get('favorite', 0))        
-        note_obj = Note(title=title, content=content, favorite=favorite)
+        favorite = int(note.get('favorite', 0))
+        tag = note.get('tag', '') or ''
+        note_obj = Note(title=title, content=content, favorite=favorite, tag=tag)
     elif isinstance(note, Note):
         note_obj = note
     else:
-        # fallback: transforma em conteúdo de texto
-        note_obj = Note(title=None, content=str(note), favorite=0)
-
+        note_obj = Note(title=None, content=str(note), favorite=0, tag='')
     db.add(note_obj)
+
 
 def toggle_favorite(note_id: int):
     db = Database('notes')
@@ -89,17 +101,13 @@ def delete_note(note_id: int):
 
 def get_note_by_id(note_id: int):
     db = Database('notes')
-    note = db.get_by_id(note_id)
-    if not note:
+    n = db.get_by_id(note_id)
+    if not n:
         return None
-    return {
-        'id': note.id,
-        'title': note.title or '',
-        'content': note.content or '',
-        'favorite': getattr(note, 'favorite', 0),
-    }
+    return {'id': n.id, 'title': n.title or '', 'content': n.content or '',
+            'favorite': getattr(n, 'favorite', 0), 'tag': getattr(n, 'tag', '') or ''}
 
-def update_note(note_id: int, title: str, content: str):
+def update_note(note_id: int, title: str, content: str, tag: str):
     db = Database('notes')
-    entry = Note(id=note_id, title=title, content=content)
+    entry = Note(id=note_id, title=title, content=content, tag=tag or '')
     db.update(entry)

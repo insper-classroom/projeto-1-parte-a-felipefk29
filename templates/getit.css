@@ -49,21 +49,24 @@ body {
   object-fit: contain;
 }
 
-.form-card{ 
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  transition: background-color 0.3s;
-  width: 420px;
-  height: 110px;
-  margin: 0 auto;
-  margin-top: 10px;
-  margin-bottom: 15px; 
-  border-radius: 2px;
-  padding: 10px;
-  gap: 5px;
-}
+ .form-card{ 
+   display: flex;
+   justify-content: center;
+   flex-direction: column;
+   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+   transition: background-color 0.3s;
+   width: 400px;
+   height: 100px;
+   height: auto;        /* deixa crescer conforme o conteúdo */
+   min-height: 100px;   /* preserva o “feeling” original */
+   margin: 0 auto;
+   margin-top: 10px;
+   margin-bottom: 15px; 
+   border-radius: 2px;
+   padding: 10px;
+   gap: 5px;
+ }
+
 .form-card-title{
   font-size: large;
   font-weight: bold;
@@ -212,6 +215,105 @@ body {
 .trash .trash-icon { fill: #4c4c4c; }
 .star .star-icon { fill: #4c4c4c; }
 .star.favorited .star-icon { fill: #f7d736; }
+
+.form-card-tag{
+  border: 0;
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-family: Arial, Helvetica, sans-serif;
+  opacity: 0.95;
+}
+
+/* Badge de tag dentro do card */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+/* chip base */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  gap: .35rem;
+  padding: .25rem .5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(0,0,0,.06);
+  font-size: .75rem;            /* 12px aprox */
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04) inset;
+  user-select: none;
+}
+
+/* bolinha de cor dentro da tag */
+.tag .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: 0 0 6px;
+  opacity: .95;
+}
+
+/* paleta suave: fundo / texto / bolinha */
+:root{
+  --tag-1:#FEF3C7; --tag-1-text:#92400E; --tag-1-dot:#F59E0B;   /* âmbar */
+  --tag-2:#E0F2FE; --tag-2-text:#075985; --tag-2-dot:#38BDF8;   /* azul */
+  --tag-3:#E9D5FF; --tag-3-text:#6B21A8; --tag-3-dot:#C084FC;   /* roxo */
+  --tag-4:#DCFCE7; --tag-4-text:#166534; --tag-4-dot:#86EFAC;   /* verde */
+  --tag-5:#FEE2E2; --tag-5-text:#991B1B; --tag-5-dot:#FCA5A5;   /* vermelho */
+  --tag-6:#FFE4E6; --tag-6-text:#9F1239; --tag-6-dot:#FDA4AF;   /* rosa */
+  --tag-7:#F1F5F9; --tag-7-text:#334155; --tag-7-dot:#94A3B8;   /* slate */
+  --tag-8:#FAE8FF; --tag-8-text:#7E22CE; --tag-8-dot:#D8B4FE;   /* violeta */
+}
+
+/* mapeia a classe de tom pra paleta */
+.tone-1 { background:var(--tag-1); color:var(--tag-1-text); }
+.tone-1 .dot { background:var(--tag-1-dot); }
+.tone-2 { background:var(--tag-2); color:var(--tag-2-text); }
+.tone-2 .dot { background:var(--tag-2-dot); }
+.tone-3 { background:var(--tag-3); color:var(--tag-3-text); }
+.tone-3 .dot { background:var(--tag-3-dot); }
+.tone-4 { background:var(--tag-4); color:var(--tag-4-text); }
+.tone-4 .dot { background:var(--tag-4-dot); }
+.tone-5 { background:var(--tag-5); color:var(--tag-5-text); }
+.tone-5 .dot { background:var(--tag-5-dot); }
+.tone-6 { background:var(--tag-6); color:var(--tag-6-text); }
+.tone-6 .dot { background:var(--tag-6-dot); }
+.tone-7 { background:var(--tag-7); color:var(--tag-7-text); }
+.tone-7 .dot { background:var(--tag-7-dot); }
+.tone-8 { background:var(--tag-8); color:var(--tag-8-text); }
+.tone-8 .dot { background:var(--tag-8-dot); }
+
+/* estado clicável (se usar pra filtro depois) */
+.tag:hover { filter: brightness(.97); transform: translateY(-1px); transition: .15s; }
+.tag:empty{ display: none; }  /* se não houver tag, não mostra */
+.details-text{
+  /* herda sua tipografia de .card-content, mas deixo explícito */
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #4c4c4c;
+  word-wrap: break-word;
+}
+
+.form-card .tag-input {
+  display:flex; align-items:center; gap:8px;
+  padding:.35rem .5rem; border:1px dashed rgba(0,0,0,.15);
+  border-radius: 8px; background:#fff; margin-top:6px;
+}
+.form-card .tag-chip-preview {
+  display:inline-flex; align-items:center; gap:.35rem;
+  padding:.25rem .5rem; border-radius:9999px;
+  background:#F1F5F9; color:#334155; font-size:.75rem; font-weight:600;
+}
+.form-card .tag-input input {
+  border:none; outline:none; font-size:.9rem; flex:1;
+}
 
 /* Você pode usar o CSS comentado abaixo, se ajudar */
 /* Fonte: https://codepen.io/CrisWoler/pen/ogXBLj */

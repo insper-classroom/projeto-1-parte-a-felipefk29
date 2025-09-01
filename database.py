@@ -18,30 +18,42 @@ class Database():
                      content TEXT NOT NULL 
                      );
                      """)
-        self.conn.commit()
         cols = [row[1] for row in cursor.execute("PRAGMA table_info(note)")]
         if 'favorite' not in cols:
             cursor.execute("ALTER TABLE note ADD COLUMN favorite INTEGER NOT NULL DEFAULT 0;")
             self.conn.commit()
+        if 'tag' not in cols:
+            cursor.execute("ALTER TABLE note ADD COLUMN tag TEXT DEFAULT '';")
+            self.conn.commit()
+        
 
     def add(self, note):
         cursor = self.conn.cursor()
         cursor.execute(
-            "INSERT INTO note (title, content, favorite) VALUES (?, ?, ?)",
-            (note.title, note.content, getattr(note, 'favorite', 0))
+            "INSERT INTO note (title, content, favorite, tag) VALUES (?, ?, ?, ?)",
+            (note.title, note.content, getattr(note, 'favorite', 0), getattr(note, 'tag', '') or '')
         )
         self.conn.commit()
     
     def get_all(self):
         notes = []
-        cursor = self.conn.execute("SELECT id, title, content, favorite FROM note ORDER BY favorite DESC, id DESC")
-        for linha in cursor:
-            _id, titulo, conteudo, fav = linha
-            notes.append(Note(id=_id, title=titulo, content=conteudo, favorite=fav))
+        cursor = self.conn.execute(
+            "SELECT id, title, content, favorite, tag FROM note ORDER BY favorite DESC, id DESC"
+        )
+        for _id, titulo, conteudo, fav, tag in cursor:
+            notes.append(Note(id=_id, title=titulo, content=conteudo, favorite=fav, tag=tag or ''))
         return notes
-    
+        
     def update(self, entry):
-        cursor = self.conn.execute(f"UPDATE note SET title = '{entry.title}', content = '{entry.content}' WHERE id = '{entry.id}'")
+        # se não vier tag no entry, mantém a do banco
+        tag = getattr(entry, 'tag', None)
+        if tag is None:
+            current = self.get_by_id(entry.id)
+            tag = current.tag if current else ''
+        self.conn.execute(
+            "UPDATE note SET title = ?, content = ?, tag = ? WHERE id = ?",
+            (entry.title, entry.content, tag, entry.id)
+        )
         self.conn.commit()
 
     def delete(self,note_id):
@@ -55,21 +67,27 @@ class Database():
         )
         self.conn.commit()
     def get_by_id(self, note_id):
-        cursor = self.conn.execute("SELECT id, title, content, favorite FROM note WHERE id = ?", 
-                                  (note_id,))
-        row = cursor.fetchone() #Retira a primeira linha do resultado do SELECT armazenado na memória
-        if row:             
-            _id, titulo, conteudo, fav = row
-            return Note(id=_id, title=titulo, content=conteudo, favorite=fav) #Caso exista a linha, retorna o objeto Note
+        try:
+            note_id = int(note_id)
+        except (TypeError, ValueError):
+            return None
+        cursor = self.conn.execute(
+            "SELECT id, title, content, favorite, tag FROM note WHERE id = ?",
+            (note_id,)   # tupla de 1 elemento!
+        )
+        row = cursor.fetchone()
+        if row:
+            _id, titulo, conteudo, fav, tag = row
+            return Note(id=_id, title=titulo, content=conteudo, favorite=fav, tag=tag or '')
         return None
     
 
 class Note:
 
-    def __init__(self, id=None, title=None, content='',favorite=0):
+    def __init__(self, id=None, title=None, content='',favorite=0, tag=None):
         self.id = id
         self.title = title
         self.content = content
         self.favorite = favorite
-
+        self.tag = tag or ''
 
