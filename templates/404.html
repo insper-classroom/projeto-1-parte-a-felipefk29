@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>404 — Página não encontrada</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Permanent+Marker&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="templates/getit.css"/>
+  <style>
+    body { background: #fffdf2; }
+    .notfound-wrap {
+      min-height: calc(100vh - 50px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .notfound-card {
+      background: #fff; border-radius: 12px;
+      padding: 28px 32px; text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+      max-width: 520px;
+    }
+    .nf-code {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 64px; letter-spacing: 2px; color: #f7d736;
+      line-height: 1; margin-bottom: 8px;
+    }
+    .nf-title {
+      font-weight: 700; font-size: 20px; color: #2c2c2c; margin-bottom: 6px;
+    }
+    .nf-msg {
+      font-size: 15px; color: #4c4c4c;
+    }
+    .nf-actions { margin-top: 16px; display: flex; justify-content: center; }
+    .nf-actions .btn { text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div class="appbar">
+    <img src="img/logo-getit.png" class="logo"/>
+    <span class="subtitle">Como o Post-it, mas com outro verbo</span>
+  </div>
+
+  <main class="notfound-wrap">
+    <div class="notfound-card">
+      <div class="nf-code">404</div>
+      <div class="nf-title">Página não encontrada</div>
+      <p class="nf-msg">Ops! O endereço que você tentou acessar não existe.<br/>
+        Verifique a URL ou volte para a página inicial.</p>
+      <div class="nf-actions">
+        <a class="btn" href="/">Voltar para o início</a>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
