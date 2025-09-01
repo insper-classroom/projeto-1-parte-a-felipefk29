@@ -101,6 +101,11 @@ body {
   transition: background-color 0.3s;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+}
+
 .card-container{
   display: flex;
   flex-direction: row;
@@ -142,16 +147,44 @@ body {
 
 .card-title {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 6px;              /* pequeno espaçamento entre título e ações */
+  margin-bottom: 8px;    /* respiro entre título e detalhes */
 }
-
 .card-actions {
   display: flex;
   gap: 8px;
+  align-self: flex-start;  /* mantém no topo */
 }
 
-.trash, .star {
+.card-title > span {
+  flex: 1;               /* ocupa a largura disponível */
+  text-align: center;    /* título centrado */
+  font-family: 'Permanent Marker', cursive;
+  font-size: 1.2rem;     /* levemente maior que o corpo */
+  font-weight: 500;      /* menos “pesado” visualmente */
+  color: #2c2c2c;
+  line-height: 1.2;
+  word-wrap: break-word;
+}
+
+.card-content {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.95rem;    /* um pouco menor que o título */
+  font-weight: 400;      /* normal */
+  line-height: 1.45;     /* melhora legibilidade */
+  color: #4c4c4c;        /* menos intenso que o título */
+  margin-top: 2px;       /* leve respiro adicional */
+  word-wrap: break-word;
+}
+
+.card {
+  box-shadow: 0 3px 5px rgba(0,0,0,0.22);
+}
+
+/* Botões-ícone (reaproveita padrão dos outros) */
+.edit, .star, .trash {
   background: transparent;
   border: none;
   padding: 2px;
@@ -160,8 +193,20 @@ body {
   opacity: 0.7;
   transition: transform .1s ease, opacity .1s ease;
   filter: drop-shadow(0 1px 1px rgba(0,0,0,.25));
-  
 }
+
+.edit:hover, .star:hover, .trash:hover {
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.edit .edit-icon { fill: #4c4c4c; }
+
+/* Mostrar “Cancelar” só quando em modo edição */
+.edit-hint { margin-left: 12px; display: inline-block; }
+.edit-hint:not(.true) { display: none; }  /* se a classe 'true' não vier, esconde */
+.btn-cancel { text-decoration: none; font-size: 0.9rem; opacity: .8; }
+.btn-cancel:hover { opacity: 1; text-decoration: underline; }
 .trash:hover { transform: scale(1.05); opacity: 1; }
 
 .trash .trash-icon { fill: #4c4c4c; }

@@ -18,9 +18,11 @@ def extract_route(request: str) -> str:
     if len(parts) < 2:
         return ''
     path = parts[1]
-    # remove slash inicial
     if path.startswith('/'):
         path = path[1:]
+    # 🔧 remova a query da rota
+    if '?' in path:
+        path = path.split('?', 1)[0]
     return path
 
 def read_file(path: Path):
@@ -85,3 +87,19 @@ def delete_note(note_id: int):
     db = Database('notes')
     db.delete(note_id)
 
+def get_note_by_id(note_id: int):
+    db = Database('notes')
+    note = db.get_by_id(note_id)
+    if not note:
+        return None
+    return {
+        'id': note.id,
+        'title': note.title or '',
+        'content': note.content or '',
+        'favorite': getattr(note, 'favorite', 0),
+    }
+
+def update_note(note_id: int, title: str, content: str):
+    db = Database('notes')
+    entry = Note(id=note_id, title=title, content=content)
+    db.update(entry)

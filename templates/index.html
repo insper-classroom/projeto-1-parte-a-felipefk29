@@ -27,20 +27,28 @@
       <span class="subtitle">Como o Post-it, mas com outro verbo</span>
     </div>
 
-  <form method="post", class="form-card">
-        <input
-          class="form-card-title"
-          type="text"
-          name="titulo"
-          placeholder="Título"
-        />
-        <textarea
-          class="autoresize"
-          name="detalhes"
-          placeholder="Digite o conteúdo..."
-        ></textarea>
-        <button class="btn" type="submit">Criar</button>
-  </form>
+<form method="post" class="form-card">
+  <input
+    class="form-card-title"
+    type="text"
+    name="titulo"
+    placeholder="Título"
+    value="{form_title_value}"
+  />
+
+  <textarea
+    class="autoresize"
+    name="detalhes"
+    placeholder="Digite o conteúdo..."
+  >{form_details_value}</textarea>
+
+  <!-- hidden só terá valor quando editando; vazio no modo criação -->
+  <input type="hidden" name="update_id" value="{form_update_id}" />
+
+  <!-- Botão como antes; o link "Cancelar" só é injetado em modo edição -->
+  <button class="btn" type="submit">{form_submit_label}</button>
+  {cancel_link}
+</form>
 
   <main class="container">
     <div class="card-container">
